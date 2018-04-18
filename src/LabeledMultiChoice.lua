@@ -22,17 +22,17 @@ function LabeledMultiChoiceClass.new(nameSuffix, labelText, choices, initChoiceI
 	local self = {}
 	setmetatable(self, LabeledMultiChoiceClass)
 
-    self._buttonObjsByIndex = {}
+	self._buttonObjsByIndex = {}
 
-    if (not initChoiceIndex ) then 
-        initChoiceIndex = 1
-    end
-    if (initChoiceIndex > #choices) then 
-        initChoiceIndex = #choices
-    end
+	if (not initChoiceIndex ) then 
+		initChoiceIndex = 1
+	end
+	if (initChoiceIndex > #choices) then 
+		initChoiceIndex = #choices
+	end
 
 
-    local vsl = VerticallyScalingListFrame.new("MCC_" .. nameSuffix)
+	local vsl = VerticallyScalingListFrame.new("MCC_" .. nameSuffix)
 	vsl:AddBottomPadding()
 
 	local titleLabel = GuiUtilities.MakeFrameWithSubSectionLabel("Title", labelText)
@@ -42,34 +42,34 @@ function LabeledMultiChoiceClass.new(nameSuffix, labelText, choices, initChoiceI
 	local cellFrame = self:_MakeRadioButtons(choices)
 	vsl:AddChild(cellFrame)
 
-    self._vsl = vsl
+	self._vsl = vsl
 
-    self:SetSelectedIndex(initChoiceIndex)
+	self:SetSelectedIndex(initChoiceIndex)
 
-    return self
+	return self
 end
 
 function LabeledMultiChoiceClass:SetSelectedIndex(selectedIndex) 
-    self._selectedIndex = selectedIndex
-    for i = 1, #self._buttonObjsByIndex do 
-        self._buttonObjsByIndex[i]:SetValue(i == selectedIndex)
-    end
+	self._selectedIndex = selectedIndex
+	for i = 1, #self._buttonObjsByIndex do 
+		self._buttonObjsByIndex[i]:SetValue(i == selectedIndex)
+	end
 
-    if (self._valueChangedFunction) then 
-        self._valueChangedFunction(self._selectedIndex)
-    end
+	if (self._valueChangedFunction) then 
+		self._valueChangedFunction(self._selectedIndex)
+	end
 end
 
 function LabeledMultiChoiceClass:GetSelectedIndex()
-    return self._selectedIndex
+	return self._selectedIndex
 end
 
 function LabeledMultiChoiceClass:SetValueChangedFunction(vcf)
-    self._valueChangedFunction = vcf
+	self._valueChangedFunction = vcf
 end
 
 function LabeledMultiChoiceClass:GetFrame()
-    return self._vsl:GetFrame()
+	return self._vsl:GetFrame()
 end
 
 
@@ -78,8 +78,8 @@ end
 -- Fixed width instead of flood-fill.
 -- Box comes first, then label.
 function LabeledMultiChoiceClass:_MakeRadioButtons(choices)
-    local frame = GuiUtilities.MakeFrame("RadioButtons")
-    frame.BackgroundTransparency = 1
+	local frame = GuiUtilities.MakeFrame("RadioButtons")
+	frame.BackgroundTransparency = 1
 
 	local padding = Instance.new("UIPadding")
 	padding.PaddingLeft = UDim.new(0, GuiUtilities.StandardLineLabelLeftMargin)
@@ -90,7 +90,7 @@ function LabeledMultiChoiceClass:_MakeRadioButtons(choices)
 	local uiGridLayout = Instance.new("UIGridLayout")
 	uiGridLayout.CellSize = LabeledCheckbox.kMinFrameSize
 	uiGridLayout.CellPadding = UDim2.new(0, 
-        kRadioButtonsHPadding,
+		kRadioButtonsHPadding,
 		0,
 		GuiUtilities.kStandardVMargin)
 	uiGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
@@ -109,17 +109,17 @@ function LabeledMultiChoiceClass:_MakeRadioButtons(choices)
 end
 
 function LabeledMultiChoiceClass:_AddRadioButton(parentFrame, index, choiceData)
-    local radioButtonObj = LabeledRadioButton.new(choiceData.Id, choiceData.Text)
-    self._buttonObjsByIndex[index] = radioButtonObj
+	local radioButtonObj = LabeledRadioButton.new(choiceData.Id, choiceData.Text)
+	self._buttonObjsByIndex[index] = radioButtonObj
 
-    radioButtonObj:SetValueChangedFunction(function(value)
-        -- If we notice the button going from off to on, and it disagrees with 
-        -- our current notion of selection, update selection.
-        if (value and self._selectedIndex ~= index) then 
-            self:SetSelectedIndex(index)
-        end
-    end)
-    
+	radioButtonObj:SetValueChangedFunction(function(value)
+		-- If we notice the button going from off to on, and it disagrees with 
+		-- our current notion of selection, update selection.
+		if (value and self._selectedIndex ~= index) then 
+			self:SetSelectedIndex(index)
+		end
+	end)
+	
 	radioButtonObj:GetFrame().LayoutOrder = index
 	radioButtonObj:GetFrame().Parent = parentFrame
 end

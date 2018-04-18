@@ -4145,23 +4145,23 @@ t.Help =
 		end 
 		if funcNameOrFunc == "CreateDropDownMenu" or funcNameOrFunc == t.CreateDropDownMenu then
 			return "Function CreateDropDownMenu.  " .. 
-			       "Arguments: (items, onItemSelected).  " .. 
+				   "Arguments: (items, onItemSelected).  " .. 
 				   "Side effect: Returns 2 results, a container to the gui object and a 'updateSelection' function for external updating.  The container is a drop-down-box created around a list of items" 
 		end 
 		if funcNameOrFunc == "CreateMessageDialog" or funcNameOrFunc == t.CreateMessageDialog then
 			return "Function CreateMessageDialog.  " .. 
-			       "Arguments: (title, message, buttons). " .. 
-			       "Side effect: Returns a gui object of a message box with 'title' and 'message' as passed in.  'buttons' input is an array of Tables contains a 'Text' and 'Function' field for the text/callback of each button"
+				   "Arguments: (title, message, buttons). " .. 
+				   "Side effect: Returns a gui object of a message box with 'title' and 'message' as passed in.  'buttons' input is an array of Tables contains a 'Text' and 'Function' field for the text/callback of each button"
 		end		
 		if funcNameOrFunc == "CreateStyledMessageDialog" or funcNameOrFunc == t.CreateStyledMessageDialog then
 			return "Function CreateStyledMessageDialog.  " .. 
-			       "Arguments: (title, message, style, buttons). " .. 
-			       "Side effect: Returns a gui object of a message box with 'title' and 'message' as passed in.  'buttons' input is an array of Tables contains a 'Text' and 'Function' field for the text/callback of each button, 'style' is a string, either Error, Notify or Confirm"
+				   "Arguments: (title, message, style, buttons). " .. 
+				   "Side effect: Returns a gui object of a message box with 'title' and 'message' as passed in.  'buttons' input is an array of Tables contains a 'Text' and 'Function' field for the text/callback of each button, 'style' is a string, either Error, Notify or Confirm"
 		end
 		if funcNameOrFunc == "GetFontHeight" or funcNameOrFunc == t.GetFontHeight then
 			return "Function GetFontHeight.  " .. 
-			       "Arguments: (font, fontSize). " .. 
-			       "Side effect: returns the size in pixels of the given font + fontSize"
+				   "Arguments: (font, fontSize). " .. 
+				   "Side effect: returns the size in pixels of the given font + fontSize"
 		end
 		if funcNameOrFunc == "LayoutGuiObjects" or funcNameOrFunc == t.LayoutGuiObjects then
 		

@@ -55,40 +55,40 @@ module.kMainFrame = nil
 
 
 function module.SetMainFrame(frame)
-    module.kMainFrame = frame
+	module.kMainFrame = frame
 end
 
 
 -- A frame with standard styling.
 function module.MakeFrame(name)
-    local frame = Instance.new("Frame")
-    frame.Name = name
-    frame.BackgroundTransparency = 0
-    frame.BackgroundColor3 = Color3.new(1, 1, 1)
-    frame.BorderSizePixel = 0
+	local frame = Instance.new("Frame")
+	frame.Name = name
+	frame.BackgroundTransparency = 0
+	frame.BackgroundColor3 = Color3.new(1, 1, 1)
+	frame.BorderSizePixel = 0
 
-    return frame
+	return frame
 end
-    
+	
 
 -- A frame that is a whole line, containing some arbitrary sized widget.
 function module.MakeFixedHeightFrame(name, height)
-    local frame = module.MakeFrame(name)
-    frame.Size = UDim2.new(1, 0, 0, height)
+	local frame = module.MakeFrame(name)
+	frame.Size = UDim2.new(1, 0, 0, height)
 
-    return frame
+	return frame
 end
 
 -- A frame that is one standard-sized line, containing some standard-sized widget (label, edit box, dropdown, 
 -- checkbox)
 function module.MakeStandardFixedHeightFrame(name)
-    return module.MakeFixedHeightFrame(name, module.kStandardPropertyHeight)
+	return module.MakeFixedHeightFrame(name, module.kStandardPropertyHeight)
 end
 
 function module.AdjustHeightDynamicallyToLayout(frame, uiLayout, optPadding)
-    if (not optPadding) then 
-        optPadding = 0
-    end
+	if (not optPadding) then 
+		optPadding = 0
+	end
 
 	local function updateSizes()
 		frame.Size = UDim2.new(1, 0, 0, uiLayout.AbsoluteContentSize.Y + optPadding)
@@ -101,80 +101,80 @@ end
 -- Add frames in order as siblings of list layout, they will be laid out in order.
 -- Color frame background accordingly.
 function module.AddStripedChildrenToListFrame(listFrame, frames)
-    for index, frame in ipairs(frames) do 
-        frame.Parent = listFrame
-        frame.LayoutOrder = index
-        frame.BackgroundColor3 = kRowStripeColors[(index + 1) % 2]
-        frame.BackgroundTransparency = 0
-        frame.BorderSizePixel = 1
-        frame.BorderColor3 = module.kStripeBorderColor 
-    end
+	for index, frame in ipairs(frames) do 
+		frame.Parent = listFrame
+		frame.LayoutOrder = index
+		frame.BackgroundColor3 = kRowStripeColors[(index + 1) % 2]
+		frame.BackgroundTransparency = 0
+		frame.BorderSizePixel = 1
+		frame.BorderColor3 = module.kStripeBorderColor 
+	end
 end
 
 local function MakeSectionInternal(parentGui, name, title, contentHeight)
-    local frame = Instance.new("Frame")
-    frame.Name = name
-    frame.BackgroundTransparency = 1
-    frame.Parent = parentGui
-    frame.BackgroundTransparency = 1
-    frame.BorderSizePixel = 0
-    
-    -- If title is "nil', no title bar.
-    local contentYOffset = 0
-    local titleBar = nil
-    if (title ~= nil) then  
-        local titleBarFrame = Instance.new("Frame")
-        titleBarFrame.Name = "TitleBarFrame"
-        titleBarFrame.Parent = frame
-        titleBarFrame.Position = UDim2.new(0, 0, 0, 0)
-        titleBarFrame.LayoutOrder = 0
+	local frame = Instance.new("Frame")
+	frame.Name = name
+	frame.BackgroundTransparency = 1
+	frame.Parent = parentGui
+	frame.BackgroundTransparency = 1
+	frame.BorderSizePixel = 0
+	
+	-- If title is "nil', no title bar.
+	local contentYOffset = 0
+	local titleBar = nil
+	if (title ~= nil) then  
+		local titleBarFrame = Instance.new("Frame")
+		titleBarFrame.Name = "TitleBarFrame"
+		titleBarFrame.Parent = frame
+		titleBarFrame.Position = UDim2.new(0, 0, 0, 0)
+		titleBarFrame.LayoutOrder = 0
 
-        local titleBar = Instance.new("TextLabel")
-        titleBar.Name = "TitleBarLabel"
-        titleBar.Text = title
-        titleBar.Parent = titleBarFrame
-        titleBar.BackgroundTransparency = 1
-        titleBar.Position = UDim2.new(0, module.kStandardHMargin, 0, 0)
+		local titleBar = Instance.new("TextLabel")
+		titleBar.Name = "TitleBarLabel"
+		titleBar.Text = title
+		titleBar.Parent = titleBarFrame
+		titleBar.BackgroundTransparency = 1
+		titleBar.Position = UDim2.new(0, module.kStandardHMargin, 0, 0)
 
-        contentYOffset = contentYOffset + module.kTitleBarHeight
-    end
+		contentYOffset = contentYOffset + module.kTitleBarHeight
+	end
 
-    frame.Size = UDim2.new(1, 0, 0, contentYOffset + contentHeight)
+	frame.Size = UDim2.new(1, 0, 0, contentYOffset + contentHeight)
 
-    return frame
+	return frame
 end
 
 function module.MakeStandardPropertyLabel(text)
-    local label = Instance.new('TextLabel')
-    label.Name = 'Label'
-    label.BackgroundTransparency = 1
-    label.Font = Enum.Font.SourceSans                    --todo: input spec font
-    label.TextSize = 15                                  --todo: input spec font size
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Text = text
-    label.AnchorPoint = Vector2.new(0, 0.5)
-    label.Position = UDim2.new(0, module.StandardLineLabelLeftMargin, 0.5, module.kTextVerticalFudge)
-    label.Size = UDim2.new(0, module.StandardLineLabelWidth, 1, 0)
-    return label
+	local label = Instance.new('TextLabel')
+	label.Name = 'Label'
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.SourceSans                    --todo: input spec font
+	label.TextSize = 15                                  --todo: input spec font size
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Text = text
+	label.AnchorPoint = Vector2.new(0, 0.5)
+	label.Position = UDim2.new(0, module.StandardLineLabelLeftMargin, 0.5, module.kTextVerticalFudge)
+	label.Size = UDim2.new(0, module.StandardLineLabelWidth, 1, 0)
+	return label
 end
 
 function module.MakeFrameWithSubSectionLabel(name, text)
-    local row = module.MakeFixedHeightFrame(name, module.kSubSectionLabelHeight)
-    row.BackgroundTransparency = 1
-        
-    local label = module.MakeStandardPropertyLabel(text)
-    label.BackgroundTransparency = 1
-    label.Parent = row
+	local row = module.MakeFixedHeightFrame(name, module.kSubSectionLabelHeight)
+	row.BackgroundTransparency = 1
+		
+	local label = module.MakeStandardPropertyLabel(text)
+	label.BackgroundTransparency = 1
+	label.Parent = row
 
-    return row
+	return row
 end
 
 function module.MakeFrameAutoScalingList(frame)
-    local uiListLayout = Instance.new("UIListLayout")
-    uiListLayout.Parent = frame
-    uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	local uiListLayout = Instance.new("UIListLayout")
+	uiListLayout.Parent = frame
+	uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-    module.AdjustHeightDynamicallyToLayout(frame, uiListLayout)
+	module.AdjustHeightDynamicallyToLayout(frame, uiListLayout)
 end
 
 

@@ -55,4 +55,4 @@ An image button with "on" and "off" states.
 A frame that contains a list of sub-widgets.  Will grow to accomodate size of children.
 
 ## License
-Roact is available under the Apache 2.0 license. See [LICENSE](LICENSE) for details.
+Available under the Apache 2.0 license. See [LICENSE](LICENSE) for details.

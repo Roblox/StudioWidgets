@@ -13,6 +13,10 @@ We encourage plugin developers to use this library so that your GUIs have a stan
 
 We will keep these libraries up to date as Studio look & feel changes (e.g. automatic support for Dark Theme, when that happens).
 
+## Please contribute!
+We will work hard to keep this library up to date, bug-free, etc.
+
+That said, we have a small team and many competing priorities, so your efforts to improve this library are welcome and invited.  Feel free to fork the repository and make fixes and improvements as you see fit.  We will be happy to merge in any updates that fit within our vision of the library.
 
 ## Coding conventions
 Class and function names are CamelCase, starting with caps.

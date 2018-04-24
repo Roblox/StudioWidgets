@@ -17,7 +17,11 @@ LabeledMultiChoiceClass = {}
 LabeledMultiChoiceClass.__index = LabeledMultiChoiceClass
 
 
-
+-- Note: 
+-- "choices" is an array of entries.
+-- each entry must have at least 2 fields:
+-- "Id" - a unique (in the scope of choices) string id.  Not visible to user.
+-- "Text" - user-facing string: the label for the choice.
 function LabeledMultiChoiceClass.new(nameSuffix, labelText, choices, initChoiceIndex)
 	local self = {}
 	setmetatable(self, LabeledMultiChoiceClass)

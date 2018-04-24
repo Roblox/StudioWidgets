@@ -45,8 +45,16 @@ function LabeledCheckboxClass.new(nameSuffix, labelText, initValue, initDisabled
 
 	local frame = GuiUtilities.MakeStandardFixedHeightFrame("CBF" .. nameSuffix)
 
+	local fullBackgroundButton = Instance.new("TextButton")
+	fullBackgroundButton.Name = "FullBackground"
+	fullBackgroundButton.Parent = frame
+	fullBackgroundButton.BackgroundTransparency = 1
+	fullBackgroundButton.Size = UDim2.new(1, 0, 1, 0)
+	fullBackgroundButton.Position = UDim2.new(0, 0, 0, 0)
+	fullBackgroundButton.Text = ""
+
 	local label = GuiUtilities.MakeStandardPropertyLabel(labelText)
-	label.Parent = frame
+	label.Parent = fullBackgroundButton
 
 	local button = Instance.new('ImageButton')
 	button.Name = 'Button'
@@ -54,7 +62,7 @@ function LabeledCheckboxClass.new(nameSuffix, labelText, initValue, initDisabled
 	button.AnchorPoint = Vector2.new(0, .5)
 	button.BackgroundTransparency = 0
 	button.Position = UDim2.new(0, GuiUtilities.StandardLineElementLeftMargin, .5, 0)
-	button.Parent = frame
+	button.Parent = fullBackgroundButton
 	button.Image = kCheckboxFrameImage
 	button.BorderSizePixel = 0
 	button.AutoButtonColor = false
@@ -74,6 +82,7 @@ function LabeledCheckboxClass.new(nameSuffix, labelText, initValue, initDisabled
 	self._button = button
 	self._label = label
 	self._checkImage = checkImage
+	self._fullBackgroundButton = fullBackgroundButton
 
 	self._disabled = not disabled
 	self:SetDisabled(disabled)
@@ -89,6 +98,12 @@ end
 
 function LabeledCheckboxClass:_SetupMouseClickHandling()
 	self._button.MouseButton1Down:connect(function()
+		if not self._disabled then
+			self:SetValue(not self._value)
+		end
+	end)
+
+	self._fullBackgroundButton.MouseButton1Down:connect(function()
 		if not self._disabled then
 			self:SetValue(not self._value)
 		end

@@ -24,7 +24,6 @@ function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
 	local defaultValue = defaultValue or ""
 
 	local frame = GuiUtilities.MakeStandardFixedHeightFrame('TextInput ' .. nameSuffix)
-	frame.Parent = parent
 	self._frame = frame
 
 	local label = GuiUtilities.MakeStandardPropertyLabel(labelText)

@@ -23,6 +23,7 @@ local kRightButtonAsset = "rbxasset://textures/TerrainTools/button_arrow.png"
 local kDownButtonAsset = "rbxasset://textures/TerrainTools/button_arrow_down.png"
 
 local kArrowSize = 9
+local kDoubleClickTimeSec = 0.5
 
 CollapsibleTitledSectionClass = {}
 CollapsibleTitledSectionClass.__index = CollapsibleTitledSectionClass
@@ -98,10 +99,18 @@ function CollapsibleTitledSectionClass:_UpdateMinimizeButton()
 	end
 end
 
+function CollapsibleTitledSectionClass:_ToggleCollapsedState()
+	self._minimized = not self._minimized
+	self._contentsFrame.Visible = not self._minimized
+	self:_UpdateMinimizeButton()
+	self:_UpdateSize()
+end
+
 function CollapsibleTitledSectionClass:_CreateTitleBar(titleText)
 	local titleTextOffset = self._titleBarHeight
 
-	local titleBar = Instance.new('Frame')
+	local titleBar = Instance.new('ImageButton')
+	titleBar.AutoButtonColor = false
 	titleBar.Name = 'TitleBarVisual'
 	titleBar.BorderSizePixel = 0
 	titleBar.Position = UDim2.new(0, 0, 0, 0)
@@ -133,14 +142,22 @@ function CollapsibleTitledSectionClass:_CreateTitleBar(titleText)
 		self._minimizeButton.BackgroundTransparency = 1
 
 		self._minimizeButton.MouseButton1Down:connect(function()
-			self._minimized = not self._minimized
-			self._contentsFrame.Visible = not self._minimized
-			self:_UpdateMinimizeButton()
-			self:_UpdateSize()
+			self:_ToggleCollapsedState()
 		end)
 		self:_UpdateMinimizeButton()
 		self._minimizeButton.Parent = titleBar
 	end
+
+	self._latestClickTime = 0
+	titleBar.MouseButton1Down:connect(function()
+		local now = tick()	
+		if (now - self._latestClickTime < kDoubleClickTimeSec) then 
+			self:_ToggleCollapsedState()
+			self._latestClickTime = 0
+		else
+			self._latestClickTime = now
+		end
+	end)
 end
 
 return CollapsibleTitledSectionClass

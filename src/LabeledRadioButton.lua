@@ -34,17 +34,12 @@ function LabeledRadioButtonClass.new(nameSuffix, labelText)
 	return newButton
 end
 
-function LabeledRadioButtonClass:_SetupMouseClickHandling()
-	-- We are only allowed to toggle from off to on.
-	self._button.MouseButton1Down:connect(function()
-		if not self._disabled then
-			if (not self._value) then 
-				self:SetValue(not self._value)
-			end
-		end
-	end)
+function LabeledRadioButtonClass:_MaybeToggleState()
+	-- A checkbox can never be toggled off. 
+	-- Only turns off because another one turns on.
+	if (not self._disabled and not self._value) then 
+		self:SetValue(not self._value)
+	end
 end
-
-
 
 return LabeledRadioButtonClass

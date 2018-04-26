@@ -39,6 +39,15 @@ module.kButtonStandardBorderColor = Color3.new(.4,.4,.4)             --todo: syn
 module.kButtonDisabledBackgroundColor = Color3.new(.7,.7,.7)         --todo: sync with spec
 module.kButtonDisabledBorderColor = Color3.new(.6,.6,.6)             --todo: sync with spec
 
+module.kButtonHoverColor = Color3.fromRGB(228, 238, 254)
+module.kButtonBorderHoverColor = Color3.fromRGB(219, 219, 219)
+
+module.kButtonSelectedColor = Color3.fromRGB(219, 219, 219)
+module.kButtonBorderSelectedColor = Color3.fromRGB(186, 186, 186)
+
+module.kButtonBackgroundTransparency = 0.5
+module.kButtonBackgroundIntenseTransparency = 0.4
+
 module.kWidgetBorderColor = Color3.fromRGB(182, 182, 182)
 module.kStripeBorderColor = Color3.fromRGB(238, 238, 238)
 

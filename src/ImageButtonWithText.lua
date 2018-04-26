@@ -11,7 +11,8 @@ GuiUtilities = require(script.Parent.GuiUtilities)
 ImageButtonWithTextClass = {}
 ImageButtonWithTextClass.__index = ImageButtonWithTextClass
 
-local kSelectedBaseTransparency = 0.85
+local kSelectedBaseTransparency = 0.2
+local kAdditionalTransparency = 0.1
 
 function ImageButtonWithTextClass.new(name, 
 		layoutOrder, 
@@ -33,7 +34,7 @@ function ImageButtonWithTextClass.new(name,
 	-- Image-with-text button has translucent background and "selected" background color.
 	-- When selected we set transluency to not-zero so we see selected color.
 	button.BackgroundTransparency = 1 
-	button.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5)
+	button.BackgroundColor3 = GuiUtilities.kStandardWhite
 
 	button.LayoutOrder = layoutOrder
 
@@ -96,13 +97,34 @@ function ImageButtonWithTextClass.new(name,
 end
 
 function ImageButtonWithTextClass:_updateButtonVisual()
-	local base = self._selected and kSelectedBaseTransparency or 1
+	-- Possibilties:
 	if (self._clicked) then 
-		self._button.BackgroundTransparency = base - 0.2
+		-- This covers 'clicked and selected' or 'clicked'
+		self._button.BackgroundColor3 = GuiUtilities.kButtonSelectedColor
+		self._button.BorderColor3 = GuiUtilities.kButtonBorderSelectedColor
+		if (self._selected) then 
+			self._button.BackgroundTransparency = GuiUtilities.kButtonBackgroundIntenseTransparency
+		else
+			self._button.BackgroundTransparency = GuiUtilities.kButtonBackgroundTransparency
+		end
 	elseif (self._hovered) then 
-		self._button.BackgroundTransparency = base - 0.1
+		-- This covers 'hovered and selected' or 'hovered'
+		self._button.BackgroundColor3 = GuiUtilities.kButtonHoverColor
+		self._button.BorderColor3 = GuiUtilities.kButtonBorderHoverColor
+		if (self._selected) then 
+			self._button.BackgroundTransparency = GuiUtilities.kButtonBackgroundIntenseTransparency
+		else
+			self._button.BackgroundTransparency = GuiUtilities.kButtonBackgroundTransparency
+		end
+	elseif (self._selected) then 
+		-- This covers 'selected'
+		self._button.BackgroundColor3 = GuiUtilities.kButtonSelectedColor
+		self._button.BorderColor3 = GuiUtilities.kButtonBorderSelectedColor
+		self._button.BackgroundTransparency = GuiUtilities.kButtonBackgroundTransparency
 	else
-		self._button.BackgroundTransparency = base
+		-- This covers 'no special state'
+		self._button.BackgroundColor3 = GuiUtilities.kStandardWhite
+		self._button.BackgroundTransparency = 1
 	end
 end
 

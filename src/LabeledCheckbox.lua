@@ -96,17 +96,19 @@ function LabeledCheckboxClass.new(nameSuffix, labelText, initValue, initDisabled
 end
 
 
+function LabeledCheckboxClass:_MaybeToggleState()
+	if not self._disabled then
+		self:SetValue(not self._value)
+	end
+end
+
 function LabeledCheckboxClass:_SetupMouseClickHandling()
 	self._button.MouseButton1Down:connect(function()
-		if not self._disabled then
-			self:SetValue(not self._value)
-		end
+		self:_MaybeToggleState()
 	end)
 
 	self._fullBackgroundButton.MouseButton1Down:connect(function()
-		if not self._disabled then
-			self:SetValue(not self._value)
-		end
+		self:_MaybeToggleState()
 	end)
 end
 

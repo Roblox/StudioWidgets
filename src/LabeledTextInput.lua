@@ -10,8 +10,6 @@ GuiUtilities = require(script.Parent.GuiUtilities)
 local kTextInputWidth = 100
 local kTextBoxInternalPadding = 4
 
-local kMaxCharacters = 10
-
 LabeledTextInputClass = {}
 LabeledTextInputClass.__index = LabeledTextInputClass
 
@@ -19,6 +17,8 @@ function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
 	local self = {}
 	setmetatable(self, LabeledTextInputClass)
 
+	self._MaxCharacters = 10
+	
 	self._valueChangedFunction = nil
 
 	local defaultValue = defaultValue or ""
@@ -56,8 +56,8 @@ function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
 	
 	textBox:GetPropertyChangedSignal("Text"):connect(function()
 		-- Never let the text be too long.
-		if (string.len(self._textBox.Text) > kMaxCharacters) then 
-			self._textBox.Text = string.sub(self._textBox.Text, 1, kMaxCharacters)
+		if (string.len(self._textBox.Text) > self._MaxCharacters) then 
+			self._textBox.Text = string.sub(self._textBox.Text, 1, self._MaxCharacters)
 			return
 		end
 
@@ -82,6 +82,14 @@ end
 
 function LabeledTextInputClass:GetValue()
 	return self._value
+end
+
+function LabeledTextInputClass:GetMaxCharacters()
+	return self._MaxCharacters
+end
+
+function LabeledTextInputClass:SetMaxCharacters(newValue)
+	self._MaxCharacters = newValue
 end
 
 function LabeledTextInputClass:SetValue(newValue)

@@ -17,7 +17,12 @@ function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
 	local self = {}
 	setmetatable(self, LabeledTextInputClass)
 
-	self._MaxCharacters = 10
+	-- Note: we are using "graphemes" instead of characters.
+	-- In modern text-manipulation-fu, what with internationalization, 
+	-- emojis, etc, it's not enough to count characters, particularly when 
+	-- concerned with "how many <things> am I rendering?".
+	-- We are using the 
+	self._MaxGraphemes = 10
 	
 	self._valueChangedFunction = nil
 
@@ -56,8 +61,22 @@ function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
 	
 	textBox:GetPropertyChangedSignal("Text"):connect(function()
 		-- Never let the text be too long.
-		if (string.len(self._textBox.Text) > self._MaxCharacters) then 
-			self._textBox.Text = string.sub(self._textBox.Text, 1, self._MaxCharacters)
+		-- Careful here: we want to measure number of graphemes, not characters, 
+		-- in the text, and we want to clamp on graphemes as well.
+		if (utf8.len(self._textBox.Text) > self._MaxGraphemes) then 
+			local count = 0
+			for start, stop in utf8.graphemes(self._textBox.Text) do
+				count = count + 1
+				if (count > self._MaxGraphemes) then 
+					-- We have gone one too far.
+					-- clamp just before the beginning of this grapheme.
+					self._textBox.Text = string.sub(self._textBox.Text, 1, start-1)
+					break
+				end
+			end
+			-- Don't continue with rest of function: the resetting of "Text" field
+			-- above will trigger re-entry.  We don't need to trigger value
+			-- changed function twice.
 			return
 		end
 
@@ -84,12 +103,12 @@ function LabeledTextInputClass:GetValue()
 	return self._value
 end
 
-function LabeledTextInputClass:GetMaxCharacters()
-	return self._MaxCharacters
+function LabeledTextInputClass:GetMaxGraphemes()
+	return self._MaxGraphemes
 end
 
-function LabeledTextInputClass:SetMaxCharacters(newValue)
-	self._MaxCharacters = newValue
+function LabeledTextInputClass:SetMaxGraphemes(newValue)
+	self._MaxGraphemes = newValue
 end
 
 function LabeledTextInputClass:SetValue(newValue)

@@ -1829,14 +1829,11 @@ t.CreateScrollingFrame = function(orderList,scrollStyle)
 		
 		for i, child in ipairs(guiObjects) do
 			if i < scrollPosition then
-				--print("Hiding " .. child.Name)
 				child.Visible = false
 			else
 				if pixelsRemainingY < 0 then
-					--print("Out of Space " .. child.Name)
 					child.Visible = false
 				else
-					--print("Laying out " .. child.Name)
 					--GuiObject
 					if setRowSize then rowSizeCounter = rowSizeCounter + 1 end
 					if xCounter + child.AbsoluteSize.X >= totalPixelsX then
@@ -1931,14 +1928,11 @@ t.CreateScrollingFrame = function(orderList,scrollStyle)
 		pos = scrollPosition
 		for i, child in ipairs(guiObjects) do
 			if i < scrollPosition then
-				--print("Hiding " .. child.Name)
 				child.Visible = false
 			else
 				if pixelsRemaining < 0 then
-					--print("Out of Space " .. child.Name)
 					child.Visible = false
 				else
-					--print("Laying out " .. child.Name)
 					--GuiObject
 					child.Position = UDim2.new(child.Position.X.Scale, child.Position.X.Offset, 0, totalPixels - pixelsRemaining)
 					pixelsRemaining = pixelsRemaining - child.AbsoluteSize.Y

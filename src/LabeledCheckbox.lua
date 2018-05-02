@@ -83,7 +83,8 @@ function LabeledCheckboxClass.new(nameSuffix, labelText, initValue, initDisabled
 	self._label = label
 	self._checkImage = checkImage
 	self._fullBackgroundButton = fullBackgroundButton
-
+	self._useDisabledOverride = false
+	self._disabledOverride = false
 	self._disabled = not disabled
 	self:SetDisabled(disabled)
 
@@ -112,6 +113,14 @@ function LabeledCheckboxClass:_SetupMouseClickHandling()
 	end)
 end
 
+function LabeledCheckboxClass:_HandleUpdatedValue()
+	self._checkImage.Visible = self:GetValue()
+
+	if (self._valueChangedFunction) then 
+		self._valueChangedFunction(self:GetValue())
+	end
+end
+
 -- Small checkboxes are a different entity.
 -- All the bits are smaller.
 -- Fixed width instead of flood-fill.
@@ -136,7 +145,13 @@ function LabeledCheckboxClass:GetFrame()
 end
 
 function LabeledCheckboxClass:GetValue()
-	return self._value
+	-- If button is disabled, and we should be using a disabled override, 
+	-- use the disabled override.
+	if (self._disabled and self._useDisabledOverride) then 
+		return self._disabledOverride
+	else
+		return self._value
+	end
 end
 
 function LabeledCheckboxClass:GetLabel()
@@ -153,8 +168,17 @@ end
 
 function LabeledCheckboxClass:SetDisabled(newDisabled)
 	local newDisabled = not not newDisabled
+
+	local originalValue = self:GetValue()
+
 	if newDisabled ~= self._disabled then
 		self._disabled = newDisabled
+
+		-- if we are no longer disabled, then we don't need or want 
+		-- the override any more.  Forget it.
+		if (not self._disabled) then 
+			self._useDisabledOverride = false
+		end
 
 		if (newDisabled) then 
 			self._checkImage.Image = kDisabledCheckImage
@@ -169,6 +193,24 @@ function LabeledCheckboxClass:SetDisabled(newDisabled)
 			self._disabledChangedFunction(self._disabled)
 		end
 	end
+
+	local newValue = self:GetValue()
+	if (newValue ~= oldValue) then 
+		self:_HandleUpdatedValue()
+	end
+end
+
+function LabeledCheckboxClass:DisableWithOverrideValue(overrideValue)
+	-- Disable this checkbox.  While disabled, force value to override
+	-- value.
+	local oldValue = self:GetValue()
+	self._useDisabledOverride = true
+	self._disabledOverride = overrideValue
+	self:SetDisabled(true)
+	local newValue = self:GetValue()
+	if (oldValue ~= newValue) then 
+		self:_HandleUpdatedValue()
+	end		
 end
 
 function LabeledCheckboxClass:GetDisabled()
@@ -181,11 +223,7 @@ function LabeledCheckboxClass:SetValue(newValue)
 	if newValue ~= self._value then
 		self._value = newValue
 
-		self._checkImage.Visible = self._value
-
-		if (self._valueChangedFunction) then 
-			self._valueChangedFunction(newValue)
-		end
+		self:_HandleUpdatedValue()
 	end
 end
 

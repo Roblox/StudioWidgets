@@ -26,34 +26,49 @@ Members and methods of classes that begin with '_' are considered "private": sho
 ### Files
 
 #### CollapsibleTitledSection.lua
-A "Section" containing one or more widgets, with titlebar.  Title bar includes rotating arrow widget which can be used to collapse/expand the secion.
+A "Section" containing one or more widgets, with titlebar.  Title bar includes rotating arrow widget which can be used to collapse/expand the section.
+
+![CollapsibleTitledSection](images/CollapsibleTitledSection.gif)
 
 #### CustomTextButton.lua
 A text button contained in an image (rounded rect).  Button and frame highlight appropriately on hover and click.
+
+![CustomTextButton](images/CustomTextButton.gif)
 
 #### GuiUtilities.lua
 Grab bag of functions and definitions used by the rest of the code: colors, spacing, etc.
 
 #### ImageButtonWithText.lua
 A button comprising an image above text.  Button highlights appropriately on hover and click.
+![ImageButtonWithText](images/ImageButtonWithText.gif)
 
 #### LabeledCheckbox.lua
 A widget comprising a text label and a checkbox.  Can be configured in normal or "small" sizing.  Layout and spacing change depending on size. 
 
+![LabeledCheckbox](images/LabeledCheckbox.gif)
+
 #### LabeledMultiChoice.lua
 A widget comprising a top-level label and a family of radio buttons.  Exactly one radio button is always selected.  Buttons are in a grid layout and will adjust to flood-fill parent. Height updates based on content.
+
+![LabeledMultiChoice](images/LabeledMultiChoice.gif)
 
 #### LabeledSlider.lua
 A widget comprising a label and a slider control.
 
+![LabeledSlider](images/LabeledSlider.gif)
+
 #### LabeledTextInput.lua
 A widget comprising a label and text edit control.
+
+![LabeledTextInput](images/LabeledTextInput.gif)
 
 #### RbxGui.lua
 Helper functions to support the slider control.
 
 #### StatefulImageButton.lua
 An image button with "on" and "off" states.
+
+![StatefulImageButton](images/StatefulImageButton.gif)
 
 #### VerticallyScalingListFrame.lua
 A frame that contains a list of sub-widgets.  Will grow to accomodate size of children.

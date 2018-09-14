@@ -11,6 +11,9 @@ LabeledCheckbox = require(script.Parent.LabeledCheckbox)
 local kButtonImage = "rbxasset://textures/TerrainTools/radio_button_frame.png"
 local kBulletImage = "rbxasset://textures/TerrainTools/radio_button_bullet.png"
 
+local kButtonImageDark = "rbxasset://textures/TerrainTools/radio_button_frame_dark.png"
+local kBulletImageDark = "rbxasset://textures/TerrainTools/radio_button_bullet_dark.png"
+
 local kFrameSize = 12
 local kBulletSize = 14
 
@@ -30,6 +33,18 @@ function LabeledRadioButtonClass.new(nameSuffix, labelText)
 	newButton._button.Image = kButtonImage
 	newButton._button.Size = UDim2.new(0, kFrameSize, 0, kFrameSize)
 	newButton._button.BackgroundTransparency = 1
+
+	local function updateImages()
+		if (GuiUtilities:ShouldUseIconsForDarkerBackgrounds()) then 
+			newButton._checkImage.Image = kBulletImageDark
+			newButton._button.Image = kButtonImageDark
+		else
+			newButton._checkImage.Image = kBulletImage
+			newButton._button.Image = kButtonImage
+		end
+	end
+	settings().Studio.ThemeChanged:connect(updateImages)
+	updateImages()
 
 	return newButton
 end

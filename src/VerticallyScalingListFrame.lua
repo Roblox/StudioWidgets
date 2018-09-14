@@ -23,8 +23,8 @@ function VerticallyScalingListFrameClass.new(nameSuffix)
 	frame.Name = 'VSLFrame' .. nameSuffix
 	frame.Size = UDim2.new(1, 0, 0, height)
 	frame.BackgroundTransparency = 0
-	frame.BackgroundColor3 = Color3.new(1, 1, 1)
 	frame.BorderSizePixel = 0
+	GuiUtilities.syncGuiElementBackgroundColor(frame)
 
 	self._frame = frame
 	

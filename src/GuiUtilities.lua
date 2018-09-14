@@ -12,8 +12,15 @@ module.kSubSectionLabelHeight = 30
 module.kStandardVMargin = 7
 module.kStandardHMargin = 16
 
-module.StandardLineLabelLeftMargin = 10
-module.StandardLineElementLeftMargin = 90
+module.kCheckboxMinLabelWidth = 52
+module.kCheckboxMinMargin = 12
+module.kCheckboxWidth = 12
+
+module.kRadioButtonsHPadding = 24
+
+module.StandardLineLabelLeftMargin = module.kTitleBarHeight
+module.StandardLineElementLeftMargin = (module.StandardLineLabelLeftMargin + module.kCheckboxMinLabelWidth
++ module.kCheckboxMinMargin + module.kCheckboxWidth + module.kRadioButtonsHPadding)
 module.StandardLineLabelWidth = (module.StandardLineElementLeftMargin - module.StandardLineLabelLeftMargin - 10 )
 
 module.kDropDownHeight = 55
@@ -25,11 +32,8 @@ module.kShapeButtonSize = 32
 module.kTextVerticalFudge = -3
 module.kButtonVerticalFudge = -5
 
-module.kStandardWhite = Color3.new(1, 1, 1)
-
 module.kBottomButtonsWidth = 100
 
-module.kStandardTextColor = Color3.new(0, 0, 0)                      --todo: input spec text color
 module.kDisabledTextColor = Color3.new(.4, .4, .4)                   --todo: input spec disabled text color
 module.kStandardButtonTextColor = Color3.new(0, 0, 0)                --todo: input spec disabled text color
 module.kPressedButtonTextColor = Color3.new(1, 1, 1)                 --todo: input spec disabled text color
@@ -39,42 +43,80 @@ module.kButtonStandardBorderColor = Color3.new(.4,.4,.4)             --todo: syn
 module.kButtonDisabledBackgroundColor = Color3.new(.7,.7,.7)         --todo: sync with spec
 module.kButtonDisabledBorderColor = Color3.new(.6,.6,.6)             --todo: sync with spec
 
-module.kButtonHoverColor = Color3.fromRGB(228, 238, 254)
-module.kButtonBorderHoverColor = Color3.fromRGB(219, 219, 219)
-
-module.kButtonSelectedColor = Color3.fromRGB(219, 219, 219)
-module.kButtonBorderSelectedColor = Color3.fromRGB(186, 186, 186)
-
 module.kButtonBackgroundTransparency = 0.5
 module.kButtonBackgroundIntenseTransparency = 0.4
 
-module.kWidgetBorderColor = Color3.fromRGB(182, 182, 182)
-module.kStripeBorderColor = Color3.fromRGB(238, 238, 238)
-
-local kDeselectedButtonColor = Color3.new(1, 1, 1)
-local kSelectedImageWithTextButtonColor = Color3.new(0.85, 0.85, 0.85)
-local kRowStripeColor = Color3.new(0.95, 0.95, 0.95)
-
-local kRowStripeColors = {}
-kRowStripeColors[0] = kRowStripeColor
-kRowStripeColors[1] = module.kStandardWhite
-
-
 module.kMainFrame = nil
 
+function module.ShouldUseIconsForDarkerBackgrounds()
+	local mainColor = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainBackground)
+	return (mainColor.r + mainColor.g + mainColor.b) / 3 < 0.5
+end
 
 function module.SetMainFrame(frame)
 	module.kMainFrame = frame
 end
 
+function module.syncGuiElementTitleColor(guiElement)
+	local function setColors()
+		guiElement.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Titlebar)
+	end
+	settings().Studio.ThemeChanged:connect(setColors)
+	setColors()
+end
+
+function module.syncGuiElementInputFieldColor(guiElement)
+	local function setColors()
+		guiElement.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.InputFieldBackground)
+	end
+	settings().Studio.ThemeChanged:connect(setColors)
+	setColors()
+end
+
+function module.syncGuiElementBackgroundColor(guiElement)
+	local function setColors()
+		guiElement.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainBackground)
+	end
+	settings().Studio.ThemeChanged:connect(setColors)
+	setColors()
+end
+
+function module.syncGuiElementStripeColor(guiElement)
+	local function setColors()
+		if ((guiElement.LayoutOrder + 1) % 2 == 0) then 
+			guiElement.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainBackground)
+		else
+			guiElement.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.CategoryItem)
+		end
+	end
+	settings().Studio.ThemeChanged:connect(setColors)
+	setColors()
+end
+
+function module.syncGuiElementBorderColor(guiElement)
+	local function setColors()
+		guiElement.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
+	end
+	settings().Studio.ThemeChanged:connect(setColors)
+	setColors()
+end
+
+function module.syncGuiElementFontColor(guiElement)
+	local function setColors()
+		guiElement.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText)
+	end
+	settings().Studio.ThemeChanged:connect(setColors)
+	setColors()
+end
 
 -- A frame with standard styling.
 function module.MakeFrame(name)
 	local frame = Instance.new("Frame")
 	frame.Name = name
 	frame.BackgroundTransparency = 0
-	frame.BackgroundColor3 = Color3.new(1, 1, 1)
 	frame.BorderSizePixel = 0
+
+	module.syncGuiElementBackgroundColor(frame)
 
 	return frame
 end
@@ -113,10 +155,10 @@ function module.AddStripedChildrenToListFrame(listFrame, frames)
 	for index, frame in ipairs(frames) do 
 		frame.Parent = listFrame
 		frame.LayoutOrder = index
-		frame.BackgroundColor3 = kRowStripeColors[(index + 1) % 2]
 		frame.BackgroundTransparency = 0
 		frame.BorderSizePixel = 1
-		frame.BorderColor3 = module.kStripeBorderColor 
+		module.syncGuiElementStripeColor(frame)
+		module.syncGuiElementBorderColor(frame)
 	end
 end
 
@@ -145,6 +187,8 @@ local function MakeSectionInternal(parentGui, name, title, contentHeight)
 		titleBar.BackgroundTransparency = 1
 		titleBar.Position = UDim2.new(0, module.kStandardHMargin, 0, 0)
 
+		module.syncGuiElementFontColor(titleBar)
+	
 		contentYOffset = contentYOffset + module.kTitleBarHeight
 	end
 
@@ -153,7 +197,7 @@ local function MakeSectionInternal(parentGui, name, title, contentHeight)
 	return frame
 end
 
-function module.MakeStandardPropertyLabel(text)
+function module.MakeStandardPropertyLabel(text, opt_ignoreThemeUpdates)
 	local label = Instance.new('TextLabel')
 	label.Name = 'Label'
 	label.BackgroundTransparency = 1
@@ -164,6 +208,11 @@ function module.MakeStandardPropertyLabel(text)
 	label.AnchorPoint = Vector2.new(0, 0.5)
 	label.Position = UDim2.new(0, module.StandardLineLabelLeftMargin, 0.5, module.kTextVerticalFudge)
 	label.Size = UDim2.new(0, module.StandardLineLabelWidth, 1, 0)
+
+	if (not opt_ignoreThemeUpdates) then 			
+		module.syncGuiElementFontColor(label)
+	end
+
 	return label
 end
 

@@ -34,7 +34,6 @@ function ImageButtonWithTextClass.new(name,
 	-- Image-with-text button has translucent background and "selected" background color.
 	-- When selected we set transluency to not-zero so we see selected color.
 	button.BackgroundTransparency = 1 
-	button.BackgroundColor3 = GuiUtilities.kStandardWhite
 
 	button.LayoutOrder = layoutOrder
 
@@ -53,6 +52,8 @@ function ImageButtonWithTextClass.new(name,
 	textLabel.TextScaled = true
 	textLabel.Font = Enum.Font.SourceSans
 	textLabel.Parent = button
+
+	GuiUtilities.syncGuiElementFontColor(textLabel)
 
 	local uiTextSizeConstraint = Instance.new("UITextSizeConstraint")
 	-- Spec asks for fontsize of 12 pixels, but in Roblox the text font sizes look smaller than the mock
@@ -91,6 +92,11 @@ function ImageButtonWithTextClass.new(name,
 		self:_updateButtonVisual()
 	end)
 	
+	function updateButtonVisual()
+		self:_updateButtonVisual()
+	end
+	settings().Studio.ThemeChanged:connect(updateButtonVisual)
+
 	self:_updateButtonVisual()
 
 	return self
@@ -100,8 +106,10 @@ function ImageButtonWithTextClass:_updateButtonVisual()
 	-- Possibilties:
 	if (self._clicked) then 
 		-- This covers 'clicked and selected' or 'clicked'
-		self._button.BackgroundColor3 = GuiUtilities.kButtonSelectedColor
-		self._button.BorderColor3 = GuiUtilities.kButtonBorderSelectedColor
+		self._button.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button, 
+			Enum.StudioStyleGuideModifier.Selected)
+		self._button.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, 
+			Enum.StudioStyleGuideModifier.Selected)
 		if (self._selected) then 
 			self._button.BackgroundTransparency = GuiUtilities.kButtonBackgroundIntenseTransparency
 		else
@@ -109,8 +117,10 @@ function ImageButtonWithTextClass:_updateButtonVisual()
 		end
 	elseif (self._hovered) then 
 		-- This covers 'hovered and selected' or 'hovered'
-		self._button.BackgroundColor3 = GuiUtilities.kButtonHoverColor
-		self._button.BorderColor3 = GuiUtilities.kButtonBorderHoverColor
+		self._button.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button, 
+			Enum.StudioStyleGuideModifier.Hover)
+		self._button.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, 
+			Enum.StudioStyleGuideModifier.Hover)
 		if (self._selected) then 
 			self._button.BackgroundTransparency = GuiUtilities.kButtonBackgroundIntenseTransparency
 		else
@@ -118,12 +128,15 @@ function ImageButtonWithTextClass:_updateButtonVisual()
 		end
 	elseif (self._selected) then 
 		-- This covers 'selected'
-		self._button.BackgroundColor3 = GuiUtilities.kButtonSelectedColor
-		self._button.BorderColor3 = GuiUtilities.kButtonBorderSelectedColor
+		self._button.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button, 
+			Enum.StudioStyleGuideModifier.Selected)
+		self._button.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border, 
+			Enum.StudioStyleGuideModifier.Selected)
 		self._button.BackgroundTransparency = GuiUtilities.kButtonBackgroundTransparency
 	else
 		-- This covers 'no special state'
-		self._button.BackgroundColor3 = GuiUtilities.kStandardWhite
+		self._button.BackgroundColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Button)
+		self._button.BorderColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Border)
 		self._button.BackgroundTransparency = 1
 	end
 end

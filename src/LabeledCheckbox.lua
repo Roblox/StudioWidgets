@@ -7,12 +7,12 @@
 ----------------------------------------
 GuiUtilities = require(script.Parent.GuiUtilities)
 
-local kCheckboxWidth = 12
+local kCheckboxWidth = GuiUtilities.kCheckboxWidth
 
 local kMinTextSize = 14
 local kMinHeight = 24
-local kMinLabelWidth = 52
-local kMinMargin = 12
+local kMinLabelWidth = GuiUtilities.kCheckboxMinLabelWidth
+local kMinMargin = GuiUtilities.kCheckboxMinMargin
 local kMinButtonWidth = kCheckboxWidth;
 
 local kMinLabelSize = UDim2.new(0, kMinLabelWidth, 0, kMinHeight)
@@ -53,7 +53,7 @@ function LabeledCheckboxClass.new(nameSuffix, labelText, initValue, initDisabled
 	fullBackgroundButton.Position = UDim2.new(0, 0, 0, 0)
 	fullBackgroundButton.Text = ""
 
-	local label = GuiUtilities.MakeStandardPropertyLabel(labelText)
+	local label = GuiUtilities.MakeStandardPropertyLabel(labelText, true)
 	label.Parent = fullBackgroundButton
 
 	local button = Instance.new('ImageButton')
@@ -92,6 +92,12 @@ function LabeledCheckboxClass.new(nameSuffix, labelText, initValue, initDisabled
 	self:SetValue(initValue)
 
 	self:_SetupMouseClickHandling()
+
+	local function updateFontColors()
+		self:UpdateFontColors()
+	end
+	settings().Studio.ThemeChanged:connect(updateFontColors)
+	updateFontColors()
 
 	return self
 end
@@ -186,7 +192,7 @@ function LabeledCheckboxClass:SetDisabled(newDisabled)
 			self._checkImage.Image = kEnabledCheckImage
 		end
 
-		self._label.TextColor3 = self._disabled and GuiUtilities.kDisabledTextColor or GuiUtilities.kStandardTextColor
+		self:UpdateFontColors()
 		self._button.BackgroundColor3 = self._disabled and GuiUtilities.kButtonDisabledBackgroundColor or GuiUtilities.kButtonStandardBackgroundColor
 		self._button.BorderColor3 = self._disabled and GuiUtilities.kButtonDisabledBorderColor or GuiUtilities.kButtonStandardBorderColor
 		if self._disabledChangedFunction then
@@ -197,6 +203,14 @@ function LabeledCheckboxClass:SetDisabled(newDisabled)
 	local newValue = self:GetValue()
 	if (newValue ~= oldValue) then 
 		self:_HandleUpdatedValue()
+	end
+end
+
+function LabeledCheckboxClass:UpdateFontColors()
+	if self._disabled then 
+		self._label.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.DimmedText)
+	else
+		self._label.TextColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.MainText)
 	end
 end
 

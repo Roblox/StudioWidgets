@@ -57,6 +57,8 @@ function CollapsibleTitledSectionClass.new(nameSuffix, titleText, showTitle, min
 	contentsFrame.Position = UDim2.new(0, 0, 0, titleBarSize)
 	contentsFrame.Parent = frame
 	contentsFrame.LayoutOrder = 2
+	GuiUtilities.syncGuiElementBackgroundColor(contentsFrame)
+
 	self._contentsFrame = contentsFrame
 
 	uiListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):connect(function()
@@ -115,21 +117,21 @@ function CollapsibleTitledSectionClass:_CreateTitleBar(titleText)
 	titleBar.BorderSizePixel = 0
 	titleBar.Position = UDim2.new(0, 0, 0, 0)
 	titleBar.Size = UDim2.new(1, 0, 0, self._titleBarHeight)
-	titleBar.BackgroundColor3 = Color3.new(.85, .85, .85)        --todo: input spec section title background color
 	titleBar.Parent = self._frame
 	titleBar.LayoutOrder = 1
+	GuiUtilities.syncGuiElementTitleColor(titleBar)
 
 	local titleLabel = Instance.new('TextLabel')
 	titleLabel.Name = 'TitleLabel'
 	titleLabel.BackgroundTransparency = 1
 	titleLabel.Font = Enum.Font.SourceSansBold                --todo: input spec font
 	titleLabel.TextSize = 15                                  --todo: input spec font size
-	titleLabel.TextColor3 = GuiUtilities.kStandardTextColor
 	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 	titleLabel.Text = titleText
 	titleLabel.Position = UDim2.new(0, titleTextOffset, 0, 0)
 	titleLabel.Size = UDim2.new(1, -titleTextOffset, 1, GuiUtilities.kTextVerticalFudge)
 	titleLabel.Parent = titleBar
+	GuiUtilities.syncGuiElementFontColor(titleLabel)
 
 	if self._minimizable then
 		self._minimizeButton = Instance.new('ImageButton')

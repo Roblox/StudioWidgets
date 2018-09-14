@@ -11,7 +11,7 @@ LabeledRadioButton = require(script.Parent.LabeledRadioButton)
 LabeledCheckbox = require(script.Parent.LabeledCheckbox)
 VerticallyScalingListFrame = require(script.Parent.VerticallyScalingListFrame)
 
-local kRadioButtonsHPadding = 24
+local kRadioButtonsHPadding = GuiUtilities.kRadioButtonsHPadding
 
 LabeledMultiChoiceClass = {}
 LabeledMultiChoiceClass.__index = LabeledMultiChoiceClass

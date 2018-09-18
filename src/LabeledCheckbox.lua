@@ -85,8 +85,7 @@ function LabeledCheckboxClass.new(nameSuffix, labelText, initValue, initDisabled
 	self._fullBackgroundButton = fullBackgroundButton
 	self._useDisabledOverride = false
 	self._disabledOverride = false
-	self._disabled = not disabled
-	self:SetDisabled(disabled)
+	self:SetDisabled(initDisabled)
 
 	self._value = not initValue
 	self:SetValue(initValue)
@@ -201,7 +200,7 @@ function LabeledCheckboxClass:SetDisabled(newDisabled)
 	end
 
 	local newValue = self:GetValue()
-	if (newValue ~= oldValue) then 
+	if (newValue ~= originalValue) then 
 		self:_HandleUpdatedValue()
 	end
 end

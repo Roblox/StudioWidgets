@@ -25,7 +25,7 @@ Members and methods of classes that begin with '_' are considered "private": sho
 
 ### Files
 
-* [CollapsibleTitledSection.lua](#collapsibletitledsection.lua)
+* [CollapsibleTitledSection.lua](#collapsibletitledsectionlua)
 * [CustomTextButton.lua](#customtextbutton.lua)
 * [GuiUtilities.lua](#customtextbutton.lua)
 * [ImageButtonWithText.lua](#imagebuttonwithtext.lua)

@@ -25,6 +25,18 @@ Members and methods of classes that begin with '_' are considered "private": sho
 
 ### Files
 
+* [CollapsibleTitledSection.lua](#collapsibletitledsection.lua)
+* [CustomTextButton.lua](#customtextbutton.lua)
+* [GuiUtilities.lua](#customtextbutton.lua)
+* [ImageButtonWithText.lua](#imagebuttonwithtext.lua)
+* [LabeledCheckbox.lua](#labeledcheckbox.lua)
+* [LabeledMultiChoice.lua](#labeledmultichoice.lua)
+* [LabeledSlider.lua](#labeledslider.lua)
+* [LabeledTextInput.lua](#labeledtextinput.lua)
+* [RbxGui.lua](#rbxgui.lua)
+* [StatefulImageButton.lua](#statefulimagebutton.lua)
+* [VerticallyScalingListFrame.lua](#verticallyscalinglistframe.lua)
+
 #### CollapsibleTitledSection.lua
 A "Section" containing one or more widgets, with titlebar.  Title bar includes rotating arrow widget which can be used to collapse/expand the section.
 

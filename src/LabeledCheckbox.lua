@@ -164,7 +164,7 @@ function LabeledCheckboxClass:GetLabel()
 end
 
 function LabeledCheckboxClass:GetButton()
-	return self._getButton
+	return self._button
 end
 
 function LabeledCheckboxClass:SetValueChangedFunction(vcFunction) 

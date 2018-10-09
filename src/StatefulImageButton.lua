@@ -84,6 +84,10 @@ function StatefulImageButtonClass:setSelected(selected)
 	self:_updateButtonVisual()
 end
 
+function StatefulImageButtonClass:getSelected()
+	return self._selected
+end
+
 function StatefulImageButtonClass:getButton()
 	return self._button
 end

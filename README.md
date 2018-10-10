@@ -36,6 +36,7 @@ Members and methods of classes that begin with '_' are considered "private": sho
 * [RbxGui.lua](#rbxguilua)
 * [StatefulImageButton.lua](#statefulimagebuttonlua)
 * [VerticallyScalingListFrame.lua](#verticallyscalinglistframelua)
+* [VerticalScrollingFrame.lua](#verticalscrollingframelua)
 
 #### CollapsibleTitledSection.lua
 A "Section" containing one or more widgets, with titlebar.  Title bar includes rotating arrow widget which can be used to collapse/expand the section.
@@ -46,7 +47,7 @@ A "Section" containing one or more widgets, with titlebar.  Title bar includes r
 local collapse = CollapsibleTitledSection.new(
 	"suffix", -- name suffix of the gui object
 	"titleText", -- the text displayed beside the collapsible arrow
-	true, -- show the title text?
+	true, -- have the content frame auto-update its size?
 	true, -- minimizable?
 	false -- minimized by default?
 )
@@ -301,6 +302,43 @@ listFrame:AddBottomPadding()
 
 -- use :GetFrame() to set the parent of the VerticallyScalingListFrame
 listFrame:GetFrame().Parent = widgetGui
+```
+
+#### VerticalScrollingFrame.lua
+A frame that holds sub-widgets and gives the user the ability to scroll through them over a fixed space.
+
+![VerticalScrollingFrame](images/VerticalScrollingFrame.gif)
+
+```Lua
+local choices = {
+	{Id = "choice1", Text = "a"},
+	{Id = "choice2", Text = "b"},
+	{Id = "choice3", Text = "c"}
+}
+
+local scrollFrame = ScrollingFrame.new("suffix")
+
+local listFrame = VerticallyScalingListFrame.new("suffix")
+local collapse = CollapsibleTitledSection.new("suffix", "titleText", true, true, true)
+local multiChoice = LabeledMultiChoice.new("suffix", "labelText", choices, 1)
+local multiChoice2 = LabeledMultiChoice.new("suffix", "labelText", choices, 2)
+
+multiChoice:GetFrame().Parent = collapse:GetContentsFrame()
+multiChoice2:GetFrame().Parent = collapse:GetContentsFrame()
+listFrame:AddChild(collapse:GetSectionFrame()) -- add child to expanding VerticallyScalingListFrame
+
+local collapse = CollapsibleTitledSection.new("suffix", "titleText", true, false, false)
+local multiChoice = LabeledMultiChoice.new("suffix", "labelText", choices, 1)
+local multiChoice2 = LabeledMultiChoice.new("suffix", "labelText", choices, 2)
+
+multiChoice:GetFrame().Parent = collapse:GetContentsFrame()
+multiChoice2:GetFrame().Parent = collapse:GetContentsFrame()
+listFrame:AddChild(collapse:GetSectionFrame()) -- add child to expanding VerticallyScalingListFrame
+
+listFrame:AddBottomPadding() -- add padding to VerticallyScalingListFrame
+
+listFrame:GetFrame().Parent = scrollFrame:GetContentFrame() -- scroll content will be the VerticallyScalingListFrame
+scrollFrame:GetSectionFrame().Parent = widgetGui -- set the section parent
 ```
 
 ### Bringing the project into studio

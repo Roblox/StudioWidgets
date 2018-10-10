@@ -74,7 +74,7 @@ function VerticalScrollingFrame:_updateScrollingFrameCanvas()
 	self:_updateScrollbarBackingVisibility()
 end
 
-function VerticalScrollingFrame:GetContentFrame()
+function VerticalScrollingFrame:GetContentsFrame()
 	return self._scrollFrame
 end
 

@@ -67,6 +67,8 @@ function CollapsibleTitledSectionClass.new(nameSuffix, titleText, autoScalingLis
 	self:_UpdateSize()
 
 	self:_CreateTitleBar(titleText)
+	self:SetCollapsedState(self._minimized)
+	
 	if (autoScalingList) then
 		GuiUtilities.MakeFrameAutoScalingList(self:GetContentsFrame())
 	end
@@ -85,9 +87,6 @@ end
 
 function CollapsibleTitledSectionClass:_UpdateSize()
 	local totalSize = self._uiListLayout.AbsoluteContentSize.Y
-	if self._minimized then
-		totalSize = self._titleBarHeight
-	end
 	self._frame.Size = UDim2.new(1, 0, 0, totalSize)
 end
 

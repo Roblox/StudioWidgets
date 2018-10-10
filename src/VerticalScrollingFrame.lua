@@ -3,8 +3,10 @@
 -- VerticalScrollingFrame.lua
 --
 -- Creates a scrolling frame that automatically updates canvas size
--- 
+--
 ----------------------------------------
+
+local GuiUtilities = require(script.Parent.GuiUtilities)
 
 local VerticalScrollingFrame = {}
 VerticalScrollingFrame.__index = VerticalScrollingFrame
@@ -56,6 +58,10 @@ function VerticalScrollingFrame.new(suffix)
 	uiListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):connect(function() self:_updateScrollingFrameCanvas() end)
 	self:_updateScrollingFrameCanvas()
 	
+	GuiUtilities.syncGuiElementScrollColor(scrollFrame)
+	GuiUtilities.syncGuiElementBorderColor(scrollBackground)
+	GuiUtilities.syncGuiElementTitleColor(scrollBackground)
+	
 	return self
 end
 
@@ -68,7 +74,7 @@ function VerticalScrollingFrame:_updateScrollingFrameCanvas()
 	self:_updateScrollbarBackingVisibility()
 end
 
-function VerticalScrollingFrame:GetContentsFrame()
+function VerticalScrollingFrame:GetContentFrame()
 	return self._scrollFrame
 end
 

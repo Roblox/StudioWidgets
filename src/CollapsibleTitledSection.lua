@@ -33,7 +33,7 @@ function CollapsibleTitledSectionClass.new(nameSuffix, titleText, showTitle, min
 	local self = {}
 	setmetatable(self, CollapsibleTitledSectionClass)
 
-	showTitle = showTitle or showTitle == nil
+	showTitle = true --showTitle or showTitle == nil -- if set to false this pretty much made this useless
 	
 	self._minimized = minimizedByDefault
 	self._minimizable = minimizable
@@ -48,6 +48,7 @@ function CollapsibleTitledSectionClass.new(nameSuffix, titleText, showTitle, min
 	local uiListLayout = Instance.new('UIListLayout')
 	uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	uiListLayout.Parent = frame
+	
 	self._uiListLayout = uiListLayout
 
 	local contentsFrame = Instance.new('Frame')
@@ -58,16 +59,30 @@ function CollapsibleTitledSectionClass.new(nameSuffix, titleText, showTitle, min
 	contentsFrame.Parent = frame
 	contentsFrame.LayoutOrder = 2
 	GuiUtilities.syncGuiElementBackgroundColor(contentsFrame)
-
+	
+	local uiListLayout2 = uiListLayout:Clone()
+	uiListLayout2.Parent = contentsFrame
+	
+	self._uiListLayout2 = uiListLayout2
+	
 	self._contentsFrame = contentsFrame
 
 	uiListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):connect(function()
+		self:_UpdateSize()
+	end)
+	self._uiListLayout2:GetPropertyChangedSignal('AbsoluteContentSize'):connect(function()
 		self:_UpdateSize()
 	end)
 	self:_UpdateSize()
 
 	if showTitle then
 		self:_CreateTitleBar(titleText)
+	end
+	
+	if (self._minimizable) then
+		self:_SetCollapsedState(self._minimized)
+	else
+		self:_SetCollapsedState(false)
 	end
 
 	return self
@@ -88,19 +103,29 @@ function CollapsibleTitledSectionClass:_UpdateSize()
 		totalSize = self._titleBarHeight
 	end
 	self._frame.Size = UDim2.new(1, 0, 0, totalSize)
+	self._contentsFrame.Size = UDim2.new(1, 0, 0, self._uiListLayout2.AbsoluteContentSize.Y)
 end
 
 function CollapsibleTitledSectionClass:_UpdateMinimizeButton()
 	-- We can't rotate it because rotated images don't get clipped by parents.
 	-- This is all in a scroll widget.
 	-- :(
-	if (self._minimized) then 
-		self._minimizeButton.Image = kRightButtonAsset
-	else
-		self._minimizeButton.Image = kDownButtonAsset
+	if (self._minimizeButton) then
+		if (self._minimized) then 
+			self._minimizeButton.Image = kRightButtonAsset
+		else
+			self._minimizeButton.Image = kDownButtonAsset
+		end
 	end
 end
 
+function CollapsibleTitledSectionClass:_SetCollapsedState(bool)
+	self._minimized = bool
+	self._contentsFrame.Visible = not bool
+	self:_UpdateMinimizeButton()
+	self:_UpdateSize()
+end
+	
 function CollapsibleTitledSectionClass:_ToggleCollapsedState()
 	self._minimized = not self._minimized
 	self._contentsFrame.Visible = not self._minimized

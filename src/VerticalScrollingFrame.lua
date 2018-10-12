@@ -22,6 +22,15 @@ function VerticalScrollingFrame.new(suffix)
 	section.BackgroundTransparency = 1
 	section.Name = "VerticalScrollFrame" .. suffix
 	
+	local scrollBackground = Instance.new("Frame")
+	scrollBackground.Name = "ScrollbarBackground"
+	scrollBackground.BackgroundColor3 = Color3.fromRGB(238, 238, 238)
+	scrollBackground.BorderColor3 = Color3.fromRGB(182, 182, 182)
+	scrollBackground.Size = UDim2.new(0, 15, 1, -2)
+	scrollBackground.Position = UDim2.new(1, -16, 0, 1)
+	scrollBackground.Parent = section
+	scrollBackground.ZIndex = 2;
+	
 	local scrollFrame = Instance.new("ScrollingFrame")
 	scrollFrame.Name = "ScrollFrame" .. suffix
 	scrollFrame.VerticalScrollBarPosition = Enum.VerticalScrollBarPosition.Right
@@ -38,14 +47,6 @@ function VerticalScrollingFrame.new(suffix)
 	scrollFrame.Position = UDim2.new(0, 0, 0, 0)
 	scrollFrame.Parent = section
 	
-	local scrollBackground = Instance.new("Frame")
-	scrollBackground.Name = "ScrollbarBackground"
-	scrollBackground.BackgroundColor3 = Color3.fromRGB(238, 238, 238)
-	scrollBackground.BorderColor3 = Color3.fromRGB(182, 182, 182)
-	scrollBackground.Size = UDim2.new(0, 15, 1, -2)
-	scrollBackground.Position = UDim2.new(1, -16, 0, 1)
-	scrollBackground.Parent = section
-	
 	local uiListLayout = Instance.new("UIListLayout")
 	uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	uiListLayout.Parent = scrollFrame
@@ -55,6 +56,7 @@ function VerticalScrollingFrame.new(suffix)
 	self._scrollBackground = scrollBackground
 	self._uiListLayout = uiListLayout
 	
+	scrollFrame:GetPropertyChangedSignal("AbsoluteSize"):connect(function() self:_updateScrollingFrameCanvas() end)
 	uiListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):connect(function() self:_updateScrollingFrameCanvas() end)
 	self:_updateScrollingFrameCanvas()
 	
@@ -66,7 +68,7 @@ function VerticalScrollingFrame.new(suffix)
 end
 
 function VerticalScrollingFrame:_updateScrollbarBackingVisibility()
-	self._scrollBackground.Visible = self._scrollFrame.CanvasSize.Y.Offset > self._scrollFrame.AbsoluteSize.Y
+	self._scrollBackground.Visible = self._scrollFrame.AbsoluteSize.y < self._uiListLayout.AbsoluteContentSize.y
 end
 
 function VerticalScrollingFrame:_updateScrollingFrameCanvas()

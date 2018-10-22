@@ -2804,8 +2804,9 @@ t.CreateSetPanel = function(userIdsForSets, objectSelected, dialogClosed, size, 
 		waterForceDirLabel.Position = UDim2.new(0,0,0,50)
 		waterForceDirLabel.Parent = waterFrame
 
-		local waterTypeChangedEvent = Instance.new("BindableEvent",waterFrame)
+		local waterTypeChangedEvent = Instance.new("BindableEvent")
 		waterTypeChangedEvent.Name = "WaterTypeChangedEvent"
+		waterTypeChangedEvent.Parent = waterFrame
 
 		local waterForceDirectionSelectedFunc = function(newForceDirection)
 			waterForceDirection = newForceDirection
@@ -3294,13 +3295,15 @@ t.CreateSetPanel = function(userIdsForSets, objectSelected, dialogClosed, size, 
 
 		contents = Data.Category[Data.CurrentCategory].Contents
 		if contents then
-			-- remove our buttons and their connections
+			-- destroy our buttons and their connections
 			for i = 1, #insertButtons do
-				insertButtons[i]:remove()
+				insertButtons[i]:Destroy()
 			end
+			
 			for i = 1, #insertButtonCons do
 				if insertButtonCons[i] then insertButtonCons[i]:disconnect() end
 			end
+			
 			insertButtonCons = {}
 			insertButtons = {}
 
@@ -3829,7 +3832,7 @@ end
 
 t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 	local function createMenuButton(size,position,text,fontsize,name,parent)
-		local button = Instance.new("TextButton",parent)
+		local button = Instance.new("TextButton")
 		button.AutoButtonColor = false
 		button.Name = name
 		button.BackgroundTransparency = 1
@@ -3841,6 +3844,7 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 		button.TextColor3 = Color3.new(1,1,1)
 		button.BorderSizePixel = 0
 		button.BackgroundColor3 = Color3.new(20/255,20/255,20/255)
+		button.Parent = parent
 
 		button.MouseEnter:connect(function ( )
 			if button.Selected then return end
@@ -3855,7 +3859,7 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 
 	end
 
-	local dragBar = Instance.new("Frame",parent)
+	local dragBar = Instance.new("Frame")
 	dragBar.Name = tostring(name) .. "DragBar"
 	dragBar.BackgroundColor3 = Color3.new(39/255,39/255,39/255)
 	dragBar.BorderColor3 = Color3.new(0,0,0)
@@ -3869,7 +3873,8 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 	end
 	dragBar.Active = true
 	dragBar.Draggable = true
-	--dragBar.Visible = false
+	dragBar.Parent = parent
+	
 	dragBar.MouseEnter:connect(function (  )
 		dragBar.BackgroundColor3 = Color3.new(49/255,49/255,49/255)
 	end)
@@ -3878,7 +3883,7 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 	end)
 
 	-- plugin name label
-	local pluginNameLabel = Instance.new("TextLabel",dragBar)
+	local pluginNameLabel = Instance.new("TextLabel")
 	pluginNameLabel.Name = "BarNameLabel"
 	pluginNameLabel.Text = " " .. tostring(name)
 	pluginNameLabel.TextColor3 = Color3.new(1,1,1)
@@ -3888,6 +3893,7 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 	pluginNameLabel.FontSize = Enum.FontSize.Size18
 	pluginNameLabel.TextXAlignment = Enum.TextXAlignment.Left
 	pluginNameLabel.BackgroundTransparency = 1
+	pluginNameLabel.Parent = dragBar
 
 	-- close button
 	local closeButton = createMenuButton(UDim2.new(0,15,0,17),UDim2.new(1,-16,0.5,-8),"X",Enum.FontSize.Size14,"CloseButton",dragBar)
@@ -3901,7 +3907,7 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 
 	-- help button
 	local helpButton = createMenuButton(UDim2.new(0,15,0,17),UDim2.new(1,-51,0.5,-8),"?",Enum.FontSize.Size14,"HelpButton",dragBar)
-	local helpFrame = Instance.new("Frame",dragBar)
+	local helpFrame = Instance.new("Frame")
 	helpFrame.Name = "HelpFrame"
 	helpFrame.BackgroundColor3 = Color3.new(0,0,0)
 	helpFrame.Size = UDim2.new(0,300,0,552)
@@ -3909,6 +3915,7 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 	helpFrame.Active = true
 	helpFrame.BorderSizePixel = 0
 	helpFrame.Visible = false
+	helpFrame.Parent = dragBar
 
 	helpButton.MouseButton1Click:connect(function(  )
 		helpFrame.Visible = not helpFrame.Visible
@@ -3934,7 +3941,7 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 	local minimizeButton = createMenuButton(UDim2.new(0,16,0,17),UDim2.new(1,-34,0.5,-8),"-",Enum.FontSize.Size14,"MinimizeButton",dragBar)
 	minimizeButton.TextYAlignment = Enum.TextYAlignment.Top
 
-	local minimizeFrame = Instance.new("Frame",dragBar)
+	local minimizeFrame = Instance.new("Frame")
 	minimizeFrame.Name = "MinimizeFrame"
 	minimizeFrame.BackgroundColor3 = Color3.new(73/255,73/255,73/255)
 	minimizeFrame.BorderColor3 = Color3.new(0,0,0)
@@ -3945,8 +3952,9 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 		minimizeFrame.Size = UDim2.new(0,183,0,50)
 	end
 	minimizeFrame.Visible = false
+	minimizeFrame.Parent = dragBar
 
-	local minimizeBigButton = Instance.new("TextButton",minimizeFrame)
+	local minimizeBigButton = Instance.new("TextButton")
 	minimizeBigButton.Position = UDim2.new(0.5,-50,0.5,-20)
 	minimizeBigButton.Name = "MinimizeButton"
 	minimizeBigButton.Size = UDim2.new(0,100,0,40)
@@ -3955,19 +3963,21 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 	minimizeBigButton.FontSize = Enum.FontSize.Size18
 	minimizeBigButton.TextColor3 = Color3.new(1,1,1)
 	minimizeBigButton.Text = "Show"
+	minimizeBigButton.Parent = minimizeFrame
 
-	local separatingLine = Instance.new("Frame",dragBar)
+	local separatingLine = Instance.new("Frame")
 	separatingLine.Name = "SeparatingLine"
 	separatingLine.BackgroundColor3 = Color3.new(115/255,115/255,115/255)
 	separatingLine.BorderSizePixel = 0
 	separatingLine.Position = UDim2.new(1,-18,0.5,-7)
 	separatingLine.Size = UDim2.new(0,1,0,14)
+	separatingLine.Parent = dragBar
 
 	local otherSeparatingLine = separatingLine:clone()
 	otherSeparatingLine.Position = UDim2.new(1,-35,0.5,-7)
 	otherSeparatingLine.Parent = dragBar
 
-	local widgetContainer = Instance.new("Frame",dragBar)
+	local widgetContainer = Instance.new("Frame")
 	widgetContainer.Name = "WidgetContainer"
 	widgetContainer.BackgroundTransparency = 1
 	widgetContainer.Position = UDim2.new(0,0,1,0)
@@ -3976,6 +3986,7 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 		widgetContainer.BackgroundTransparency = 0
 		widgetContainer.BackgroundColor3 = Color3.new(72/255,72/255,72/255)
 	end
+	widgetContainer.Parent = dragBar
 
 	if size then
 		if scrollable then
@@ -4015,14 +4026,15 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 		end
 		control:FindFirstChild("ScrollDownButton").Position = UDim2.new(0,0,1,-20)
 
-		local fakeLine = Instance.new("Frame",control)
+		local fakeLine = Instance.new("Frame")
 		fakeLine.Name = "FakeLine"
 		fakeLine.BorderSizePixel = 0
 		fakeLine.BackgroundColor3 = Color3.new(0,0,0)
 		fakeLine.Size = UDim2.new(0,1,1,1)
 		fakeLine.Position = UDim2.new(1,0,0,0)
+		fakeLine.Parent = control
 
-		verticalDragger = Instance.new("TextButton",widgetContainer)
+		verticalDragger = Instance.new("TextButton")
 		verticalDragger.ZIndex = 2
 		verticalDragger.AutoButtonColor = false
 		verticalDragger.Name = "VerticalDragger"
@@ -4032,14 +4044,16 @@ t.CreatePluginFrame = function (name,size,position,scrollable,parent)
 		verticalDragger.Position = UDim2.new(0,0,1,0)
 		verticalDragger.Active = true
 		verticalDragger.Text = ""
+		verticalDragger.Parent = widgetContainer
 
-		local scrubFrame = Instance.new("Frame",verticalDragger)
+		local scrubFrame = Instance.new("Frame")
 		scrubFrame.Name = "ScrubFrame"
 		scrubFrame.BackgroundColor3 = Color3.new(1,1,1)
 		scrubFrame.BorderSizePixel = 0
 		scrubFrame.Position = UDim2.new(0.5,-5,0.5,0)
 		scrubFrame.Size = UDim2.new(0,10,0,1)
 		scrubFrame.ZIndex = 5
+		scrubFrame.Parent = verticalDragger
 		local scrubTwo = scrubFrame:clone()
 		scrubTwo.Position = UDim2.new(0.5,-5,0.5,-2)
 		scrubTwo.Parent = verticalDragger

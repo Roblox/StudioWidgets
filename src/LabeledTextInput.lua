@@ -13,7 +13,7 @@ local kTextBoxInternalPadding = 4
 LabeledTextInputClass = {}
 LabeledTextInputClass.__index = LabeledTextInputClass
 
-function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
+function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue, stretchToFit)
 	local self = {}
 	setmetatable(self, LabeledTextInputClass)
 
@@ -40,15 +40,20 @@ function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
 	-- Dumb hack to add padding to text box,
 	local textBoxWrapperFrame = Instance.new("Frame")
 	textBoxWrapperFrame.Name = "Wrapper"
-	textBoxWrapperFrame.Size = UDim2.new(0, kTextInputWidth, 0.6, 0)
+	
+	if not stretchToFit then
+		textBoxWrapperFrame.Size = UDim2.new(0, kTextInputWidth, 0.6, 0)
+	else
+		textBoxWrapperFrame.Size = UDim2.new(1,-(GuiUtilities.StandardLineElementLeftMargin+GuiUtilities.StandardLineLabelLeftMargin), 0.6, 0)
+	end
+	
 	textBoxWrapperFrame.Position = UDim2.new(0, GuiUtilities.StandardLineElementLeftMargin, .5, 0)
 	textBoxWrapperFrame.AnchorPoint = Vector2.new(0, .5)
-	textBoxWrapperFrame.Parent = frame
 	GuiUtilities.syncGuiElementInputFieldColor(textBoxWrapperFrame)
 	GuiUtilities.syncGuiElementBorderColor(textBoxWrapperFrame)
-
+	textBoxWrapperFrame.Parent = frame
+	
 	local textBox = Instance.new("TextBox")
-	textBox.Parent = textBoxWrapperFrame
 	textBox.Name = "TextBox"
 	textBox.Text = defaultValue
 	textBox.Font = Enum.Font.SourceSans
@@ -58,8 +63,8 @@ function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
 	textBox.Size = UDim2.new(1, -kTextBoxInternalPadding, 1, GuiUtilities.kTextVerticalFudge)
 	textBox.Position = UDim2.new(0, kTextBoxInternalPadding, 0, 0)
 	textBox.ClipsDescendants = true
-
 	GuiUtilities.syncGuiElementFontColor(textBox)
+	textBox.Parent = textBoxWrapperFrame
 	
 	textBox:GetPropertyChangedSignal("Text"):connect(function()
 		-- Never let the text be too long.
@@ -83,6 +88,7 @@ function LabeledTextInputClass.new(nameSuffix, labelText, defaultValue)
 		end
 
 		self._value = self._textBox.Text
+		
 		if (self._valueChangedFunction) then 
 			self._valueChangedFunction(self._value)
 		end

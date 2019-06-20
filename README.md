@@ -75,7 +75,7 @@ local button = CustomTextButton.new(
 )
 
 -- use the :getButton() method to return the ImageButton gui object
-local buttonObject = button:getButton()
+local buttonObject = button:GetButton()
 buttonObject.Size = UDim2.new(0, 70, 0, 25)
 
 buttonObject.MouseButton1Click:Connect(function()

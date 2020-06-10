@@ -109,6 +109,14 @@ function module.syncGuiElementFontColor(guiElement)
 	setColors()
 end
 
+function module.syncGuiElementScrollColor(guiElement)
+	local function setColors()
+		guiElement.ScrollBarImageColor3 = settings().Studio.Theme:GetColor(Enum.StudioStyleGuideColor.ScrollBar)
+	end
+	settings().Studio.ThemeChanged:connect(setColors)
+	setColors()
+end
+
 -- A frame with standard styling.
 function module.MakeFrame(name)
 	local frame = Instance.new("Frame")

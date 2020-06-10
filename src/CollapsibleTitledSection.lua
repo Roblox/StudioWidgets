@@ -11,7 +11,9 @@
 -- Requires "parent" and "sectionName" parameters and returns the section and its contentsFrame
 -- The entire frame will resize dynamically as contents frame changes size.
 --
---  "showTitle" is true by default and will not display the section title if false
+-- "autoScalingList" is a boolean that defines wheter or not the content frame automatically resizes when children are added.
+-- This is important for cases when you want minimize button to push or contract what is below it.
+--
 -- Both "minimizeable" and "minimizedByDefault" are false by default
 -- These parameters define if the section will have an arrow button infront of the title label, 
 -- which the user may use to hide the section's contents
@@ -29,16 +31,14 @@ CollapsibleTitledSectionClass = {}
 CollapsibleTitledSectionClass.__index = CollapsibleTitledSectionClass
 
 
-function CollapsibleTitledSectionClass.new(nameSuffix, titleText, showTitle, minimizable, minimizedByDefault)
+function CollapsibleTitledSectionClass.new(nameSuffix, titleText, autoScalingList, minimizable, minimizedByDefault)
 	local self = {}
 	setmetatable(self, CollapsibleTitledSectionClass)
-
-	showTitle = showTitle or showTitle == nil
 	
 	self._minimized = minimizedByDefault
 	self._minimizable = minimizable
 
-	self._titleBarHeight = showTitle and GuiUtilities.kTitleBarHeight or 0
+	self._titleBarHeight = GuiUtilities.kTitleBarHeight
 
 	local frame = Instance.new('Frame')
 	frame.Name = 'CTSection' .. nameSuffix
@@ -66,8 +66,11 @@ function CollapsibleTitledSectionClass.new(nameSuffix, titleText, showTitle, min
 	end)
 	self:_UpdateSize()
 
-	if showTitle then
-		self:_CreateTitleBar(titleText)
+	self:_CreateTitleBar(titleText)
+	self:SetCollapsedState(self._minimized)
+	
+	if (autoScalingList) then
+		GuiUtilities.MakeFrameAutoScalingList(self:GetContentsFrame())
 	end
 
 	return self
@@ -84,9 +87,6 @@ end
 
 function CollapsibleTitledSectionClass:_UpdateSize()
 	local totalSize = self._uiListLayout.AbsoluteContentSize.Y
-	if self._minimized then
-		totalSize = self._titleBarHeight
-	end
 	self._frame.Size = UDim2.new(1, 0, 0, totalSize)
 end
 
@@ -101,11 +101,15 @@ function CollapsibleTitledSectionClass:_UpdateMinimizeButton()
 	end
 end
 
-function CollapsibleTitledSectionClass:_ToggleCollapsedState()
-	self._minimized = not self._minimized
-	self._contentsFrame.Visible = not self._minimized
+function CollapsibleTitledSectionClass:SetCollapsedState(bool)
+	self._minimized = bool
+	self._contentsFrame.Visible = not bool
 	self:_UpdateMinimizeButton()
 	self:_UpdateSize()
+end
+
+function CollapsibleTitledSectionClass:_ToggleCollapsedState()
+	self:SetCollapsedState(not self._minimized)
 end
 
 function CollapsibleTitledSectionClass:_CreateTitleBar(titleText)
@@ -133,22 +137,21 @@ function CollapsibleTitledSectionClass:_CreateTitleBar(titleText)
 	titleLabel.Parent = titleBar
 	GuiUtilities.syncGuiElementFontColor(titleLabel)
 
-	if self._minimizable then
-		self._minimizeButton = Instance.new('ImageButton')
-		self._minimizeButton.Name = 'MinimizeSectionButton'
-		self._minimizeButton.Image = kRightButtonAsset              --todo: input arrow image from spec
-		self._minimizeButton.Size = UDim2.new(0, kArrowSize, 0, kArrowSize)
-		self._minimizeButton.AnchorPoint = Vector2.new(0.5, 0.5)
-		self._minimizeButton.Position = UDim2.new(0, self._titleBarHeight*.5,
-			 0, self._titleBarHeight*.5)
-		self._minimizeButton.BackgroundTransparency = 1
+	self._minimizeButton = Instance.new('ImageButton')
+	self._minimizeButton.Name = 'MinimizeSectionButton'
+	self._minimizeButton.Image = kRightButtonAsset              --todo: input arrow image from spec
+	self._minimizeButton.Size = UDim2.new(0, kArrowSize, 0, kArrowSize)
+	self._minimizeButton.AnchorPoint = Vector2.new(0.5, 0.5)
+	self._minimizeButton.Position = UDim2.new(0, self._titleBarHeight*.5,
+		 0, self._titleBarHeight*.5)
+	self._minimizeButton.BackgroundTransparency = 1
+	self._minimizeButton.Visible = self._minimizable -- only show when minimizable
 
-		self._minimizeButton.MouseButton1Down:connect(function()
-			self:_ToggleCollapsedState()
-		end)
-		self:_UpdateMinimizeButton()
-		self._minimizeButton.Parent = titleBar
-	end
+	self._minimizeButton.MouseButton1Down:connect(function()
+		self:_ToggleCollapsedState()
+	end)
+	self:_UpdateMinimizeButton()
+	self._minimizeButton.Parent = titleBar
 
 	self._latestClickTime = 0
 	titleBar.MouseButton1Down:connect(function()

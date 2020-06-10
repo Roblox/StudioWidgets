@@ -66,7 +66,7 @@ function ImageButtonWithTextClass.new(name,
 	self._hovered = false
 	self._selected = false
 
-	button.InputBegan:connect(function(input)
+	button.InputBegan:Connect(function(input)
 		if (input.UserInputType == Enum.UserInputType.MouseMovement) then               
 			self._hovered = true
 			self:_updateButtonVisual()
@@ -74,7 +74,7 @@ function ImageButtonWithTextClass.new(name,
 	end)
 
 
-	button.InputEnded:connect(function(input)
+	button.InputEnded:Connect(function(input)
 		if (input.UserInputType == Enum.UserInputType.MouseMovement) then               
 			self._hovered = false
 			self._clicked = false
@@ -82,12 +82,12 @@ function ImageButtonWithTextClass.new(name,
 		end
 	end)    
 
-	button.MouseButton1Down:connect(function()
+	button.MouseButton1Down:Connect(function()
 		self._clicked = true
 		self:_updateButtonVisual()
 	end)
 
-	button.MouseButton1Up:connect(function()
+	button.MouseButton1Up:Connect(function()
 		self._clicked = false
 		self:_updateButtonVisual()
 	end)
@@ -141,16 +141,16 @@ function ImageButtonWithTextClass:_updateButtonVisual()
 	end
 end
 
-function ImageButtonWithTextClass:getButton()
+function ImageButtonWithTextClass:GetButton()
 	return self._button
 end
 
-function ImageButtonWithTextClass:setSelected(selected)
+function ImageButtonWithTextClass:SetSelected(selected)
 	self._selected = selected
 	self:_updateButtonVisual()
 end
  
-function ImageButtonWithTextClass:getSelected()
+function ImageButtonWithTextClass:GetSelected()
 	return self._selected
 end
 
